@@ -1,0 +1,44 @@
+﻿                                              بسم الله الرحمن الرحيم
+  
+
+                                                Custome
+
+1- craete Register action , Services for Register to  Used to insert data to User Tables And Customer Table 
+2- craete login action , Services for login to   
+3- Create change password action ,Services for change password
+4- Create update action ,Services for update
+5- Create Delete action ,Services for Delete
+6- Create GetById action ,Services for GetById
+=========================>>>>>>  Didnt create action to get all customer   <<<<<<<<<<<<<<<<=========================
+
+==================================###############################################=========================================
+
+                                              Address 
+address used to handel all operation related to managing custome address 
+
+what will do ?
+  It allows customers to add, view, update, and delete their billing and shipping addresses
+
+1-Create Address: Customers can add new billing or shipping addresses to their profiles
+
+2-Retrieve Address by ID: Allows retrieval of specific address details using a unique identifier. 
+  Useful for viewing or editing a particular address
+
+3- Update Address: Permits customers to modify existing address information
+
+4- Delete Address: Facilitates the removal of an address from a customer’s profile
+
+5- Retrieve All Addresses for a Customer:  
+       provide list of address related to customer (assists in select address during الدفع و ادارة الحساب)
+
+
+=================================###########################################===============================================
+                                        
+                                        Category
+1- Create: Add new product categories to organize merchandise logically.
+
+2- Read: Retrieve details of existing categories for display and management purposes.
+
+3- Update: Modify existing category information to reflect changes in product organization or business requirements.
+
+

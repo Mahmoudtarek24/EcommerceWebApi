@@ -1,0 +1,17 @@
+﻿
+namespace Data_Access_Layer.Models
+{
+	public class Product
+	{
+		public int ProductId { get; set; }
+		public string ProductName { get; set; } = null!;
+		public string Description { get; set; } = null!;
+		public string ProductImage { get; set; } = null!;
+		public decimal Price { get; set; }
+		public int StockQuantity { get; set; }
+	    public int DiscountPercentage { get; set; }
+		public bool IsAvailable { get; set; }
+		public int CategoryId { get; set; }
+		public Category Category { get; set; }
+	}
+}

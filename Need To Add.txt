@@ -1,0 +1,32 @@
+
+for customer need to add isActive properity  ,profile phpto
+
+==============> 
+
+categor used ISdeleted in delete method 
+
+
+private async Task<string> CheckEmailUserName(string InputData)
+		{
+			string message = null;
+
+			ApplicationUser user;
+			//chech username ,or email is valaid
+			var IsEmail = new EmailAddressAttribute().IsValid(InputData);
+			if (IsEmail)
+			{
+				user = await userManager.FindByEmailAsync(InputData);
+			}
+			else
+			{
+				user = await userManager.FindByNameAsync(InputData);
+			}
+
+
+
+		}
+
+
+
+
+
