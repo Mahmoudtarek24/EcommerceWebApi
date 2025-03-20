@@ -1,7 +1,4 @@
 ﻿
-using Bussines_Logic.DTO.IDTO;
-using Data_Access_Layer.Models;
-
 namespace Bussines_Logic.Services.Services
 {
 	public class AddressService<D> : IGenericService<AddressResponseDTO, D> where D : class

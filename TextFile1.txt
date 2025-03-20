@@ -42,3 +42,82 @@ what will do ?
 3- Update: Modify existing category information to reflect changes in product organization or business requirements.
 
 
+
+================================###############################++++++++++++++++++++++++++++++++++++
+
+      add services to handel image
+
+====================================########################################3===========================================
+                                
+====henadle remove image only                                
+
+                                                    Product
+  create imageProduct table represent on it all images realated to product
+
+1- create product Action ,services for create  
+
+2- create update for procuct , services to handel it 
+
+3- reaturn all product realed to one category 
+
+4- return product by id 
+
+5- create delete product , delete virtual ,add servces for it 
+
+6- craete action used to update status on stoce (availadle ,or not available);
+
+//when quentum on stock arrive 0 make it unavailabe 0
+
+
+
+######################################################################################################################
+
+                                                Cart 
+
+firt We create Cart Model represent shopping cart for customer ,CartItem represent Indvidual intem within Cart 
+
+1-  AddToCart => first we recive object (have customerId ,ProductId ,Quentity)  
+
+
+2-  UpdateCart Same logic of add to cart no amy different
+
+
+3-  create action and services  to delete Specific (product) and her data (price ,quentity ,name ....)  from "Cart"
+
+
+4-  carete action and services to delete all Cart By CustomerId also will delete all CartItem Data
+
+
+5-  create action and services to return all Cart (cartItem) for custome (كل المنتجات الي هيشتريها)  
+
+
+############################################################################################################################
+                                                  
+                                                  Order 
+ Order modul essentionl compount represent managing entire lifecycle of customer orders from creation to completion. 
+
+ Order Creation  simplify start on new order capturing essential details  (customer information ,billing ,shipping address 
+  , list of products being purchased.)  
+
+
+
+(Using a Cart: The customer adds items to a shopping cart (like a virtual basket),
+  browses a bit more, then goes to checkout to turn the cart into an order.
+
+Directly Ordering: The customer skips the cart entirely and provides the order details all at once, like saying, 
+ “I want 2 Blue T-Shirts and 1 Pair of Pants—process it now.”)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

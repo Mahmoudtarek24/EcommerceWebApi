@@ -1,6 +1,4 @@
 ﻿
-using Data_Access_Layer.Repository.Repository;
-
 namespace Data_Access_Layer.Unit_Of_Work
 {
 	public interface IUnitOfWork
@@ -8,7 +6,12 @@ namespace Data_Access_Layer.Unit_Of_Work
 		CustomerRepository CustomerRepository { get; }	
 		AddressRepository AddressRepository { get; }
 		CategoryRepository CategoryRepository { get; }
-		ProductRepository ProductRepository { get; }	
+		ProductRepository ProductRepository { get; }
+		ImageProducrRepository imageProducrRepository { get; }	
+		CartItemRepository CartItemRepository { get; }
+		CartRepository CartRepository { get; }
+		OrderItemRepository OrderItemRepository { get; }
+		OrderRepository OrderRepository { get; }	
 		Task Commit();
 		Task RollBack();
 		Task Save();

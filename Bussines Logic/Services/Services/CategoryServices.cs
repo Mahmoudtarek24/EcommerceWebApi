@@ -1,6 +1,4 @@
 ﻿
-using Bussines_Logic.DTO.IDTO;
-
 namespace Bussines_Logic.Services.Services
 {
 	public class CategoryServices<D> : IGenericService<CategoryResponseDTO, D> where D : class

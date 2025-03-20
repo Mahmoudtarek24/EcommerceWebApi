@@ -52,6 +52,7 @@ namespace Data_Access_Layer.Repository.Repository
 			return await query.SingleOrDefaultAsync(filter);	
 
 		}
+		
 		public async Task<T> GetByIdAsync(int id)
 		{
 			return await Table.FindAsync(id);
@@ -61,5 +62,6 @@ namespace Data_Access_Layer.Repository.Repository
 		{
 		  await Table.AddAsync(entity);	
 		}
+	
 	}
 }

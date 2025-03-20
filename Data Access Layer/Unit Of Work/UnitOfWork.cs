@@ -1,6 +1,4 @@
-﻿using Data_Access_Layer.Repository.Repository;
-using Microsoft.EntityFrameworkCore.Storage;
-
+﻿
 namespace Data_Access_Layer.Unit_Of_Work
 {
 	public class UnitOfWork : IUnitOfWork
@@ -10,7 +8,17 @@ namespace Data_Access_Layer.Unit_Of_Work
 		public AddressRepository AddressRepository { get; }
 		public CategoryRepository CategoryRepository { get; }
 
-		public ProductRepository ProductRepository { get; }	
+		public ProductRepository ProductRepository { get; }
+
+		public ImageProducrRepository imageProducrRepository { get; }
+
+		public CartItemRepository CartItemRepository { get; }	
+
+		public CartRepository CartRepository { get; }
+
+		public OrderItemRepository OrderItemRepository { get; }
+
+		public OrderRepository OrderRepository { get; }
 
 		private readonly EcommerceDbContext context;
 		private IDbContextTransaction transaction;
@@ -19,8 +27,13 @@ namespace Data_Access_Layer.Unit_Of_Work
 			this.context = context;
 			CustomerRepository = new CustomerRepository(context);
 			AddressRepository= new AddressRepository(context);	
-			CategoryRepository= new CategoryRepository(context);	
-			ProductRepository= new ProductRepository(context);	
+			CategoryRepository= new CategoryRepository(context);
+			ProductRepository = new ProductRepository(context);	
+			imageProducrRepository= new ImageProducrRepository(context);	
+		    CartRepository= new CartRepository(context);	
+			CartItemRepository= new CartItemRepository(context);	
+			OrderItemRepository= new OrderItemRepository(context);	
+			OrderRepository= new OrderRepository(context);	
 		}
 
 		public async Task Commit()

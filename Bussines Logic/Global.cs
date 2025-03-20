@@ -13,3 +13,13 @@ global using Bussines_Logic.Services.Services;
 global using Bussines_Logic.DTO.CategoryDto;
 global using Bussines_Logic.ResponseDTO.CategoryRespondDto;
 global using Microsoft.AspNetCore.Hosting;
+global using Bussines_Logic.DTO.ProductDto;
+global using Microsoft.AspNetCore.Http;
+global using Bussines_Logic.ResponseDTO.ProductRespondDto;
+global using Bussines_Logic.DTO.CartDto;
+global using Bussines_Logic.ResponseDTO.CartShoppingDto;
+global using Bussines_Logic.ResponseDTO.OrderRespondDto;
+global using Bussines_Logic.DTO.OrderDto;
+
+
+

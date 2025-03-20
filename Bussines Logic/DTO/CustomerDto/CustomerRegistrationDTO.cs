@@ -1,6 +1,4 @@
 ﻿
-using Bussines_Logic.DTO.IDTO;
-
 namespace Bussines_Logic.DTO
 {
 	public class CustomerRegistrationDTO : IDto

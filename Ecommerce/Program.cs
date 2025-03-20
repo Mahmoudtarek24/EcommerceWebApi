@@ -23,10 +23,12 @@ namespace Ecommerce
 			builder.Services.AddSwaggerGen();
 
 			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-			//builder.Services.AddScoped<IGenericService<CustomerResponseDTO, CustomerRegistrationDTO>, CustomerService<CustomerRegistrationDTO>>();
+			builder.Services.AddScoped<IImageService, ImageService>();
 			builder.Services.AddScoped<CustomerService<IDto>>();
 			builder.Services.AddScoped<AddressService<IDto>>();
 			builder.Services.AddScoped<CategoryServices<IDto>>();
+			builder.Services.AddScoped<ProductServices<IDto>>();
+			builder.Services.AddScoped<ShoppingCartService>();
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.

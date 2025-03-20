@@ -1,8 +1,4 @@
-﻿using Bussines_Logic.DTO.AddressDto;
-using Bussines_Logic.DTO.IDTO;
-using Bussines_Logic.Services.Services;
-using Data_Access_Layer.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Controllers

@@ -6,6 +6,19 @@ for customer need to add isActive properity  ,profile phpto
 categor used ISdeleted in delete method 
 
 
+
+
+#############calculaye tottal 
+
+
+
+
+
+
+
+
+
+
 private async Task<string> CheckEmailUserName(string InputData)
 		{
 			string message = null;

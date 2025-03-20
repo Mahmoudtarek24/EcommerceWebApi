@@ -3,6 +3,6 @@
     //This DTO is a simple confirmation message structure for actions like updates and deletions
     public class ConfirmationResponseDTO
 	{
-        public string Message { get; set; }
+        public string Message {   get; set; }
     }
 }
