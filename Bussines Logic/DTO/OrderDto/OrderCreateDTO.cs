@@ -1,7 +1,7 @@
 ﻿
 namespace Bussines_Logic.DTO.OrderDto
 {
-	public class OrderCreateDTO 
+	public class OrderCreateDTO  :IDto
 	{
 		[Required(ErrorMessage = Error.RequiredFiled)]
 		public int CustomerId { get; set; }

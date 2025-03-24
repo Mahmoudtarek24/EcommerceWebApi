@@ -30,6 +30,9 @@ namespace Data_Access_Layer.Models
 
 		public ICollection<OrderItem> orderItems { get; set; }
 
+		public Payment payment { get; set; }	
+
+		public Cancellation cancellation { get; set; }		
 
 	}
 }

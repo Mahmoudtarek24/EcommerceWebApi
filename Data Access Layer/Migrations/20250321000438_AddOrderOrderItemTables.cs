@@ -155,8 +155,7 @@ namespace DataAccessLayer.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ShippingAddressId",
                 table: "Orders",
-                column: "ShippingAddressId",
-                unique: true);
+                column: "ShippingAddressId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Addresss_Customers_CustomerId",

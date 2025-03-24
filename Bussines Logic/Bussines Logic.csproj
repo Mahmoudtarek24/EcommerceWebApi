@@ -9,6 +9,7 @@
 
   <ItemGroup>
 	  <FrameworkReference Include="Microsoft.AspNetCore.App" />
+	  <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.0" />
     <ProjectReference Include="..\Data Access Layer\Data Access Layer.csproj" />
   </ItemGroup>
 

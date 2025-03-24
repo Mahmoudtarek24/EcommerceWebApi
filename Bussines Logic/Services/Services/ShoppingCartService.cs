@@ -56,7 +56,8 @@ namespace Bussines_Logic.Services.Services
 				var existingCartItem = cart.CartItems.FirstOrDefault(e => e.ProductId == AddDto.ProductId);
 
 				// Calculate discount per unit, if applicable.
-				var discount = product.DiscountPercentage > 0 ? product.Price * product.DiscountPercentage / 100 : 0;
+				var discountPerUnit = product.DiscountPercentage > 0 ? (product.Price * product.DiscountPercentage / 100) : 0;
+				var totalDiscount = discountPerUnit * AddDto.Quantity;
 
 				if (existingCartItem != null)
 				{
@@ -67,9 +68,10 @@ namespace Bussines_Logic.Services.Services
 
 					//add new Quantity of product to selected product
 					existingCartItem.Quantity += AddDto.Quantity;
-					existingCartItem.TotalPrice = (existingCartItem.UnitPrice - existingCartItem.Discount) * existingCartItem.Quantity;
+					existingCartItem.Discount += totalDiscount;
+					existingCartItem.UnitPrice = product.Price;	
+					existingCartItem.TotalPrice = (existingCartItem.UnitPrice * existingCartItem.Quantity) - existingCartItem.Discount;
 					existingCartItem.UpdatedAt = DateTime.Now;
-					existingCartItem.Discount += discount;
 
 					//Reducing the quantity of the product from the Stock after adding to cart
 					product.StockQuantity -= AddDto.Quantity;
@@ -84,12 +86,12 @@ namespace Bussines_Logic.Services.Services
 					var cartItem = new CartItem()
 					{
 						CartId = cart.cartId,
-						Discount = discount,
+						Discount = totalDiscount,
 						ProductId = AddDto.ProductId,
 						CreatedAt = DateTime.Now,
 						Quantity = AddDto.Quantity,
 						UnitPrice = product.Price,
-						TotalPrice = (product.Price - discount) * AddDto.Quantity,
+					    TotalPrice=(product.Price*AddDto.Quantity)- totalDiscount
 					};
 					await unitOfWork.CartItemRepository.Insert(cartItem);
 
@@ -138,16 +140,18 @@ namespace Bussines_Logic.Services.Services
 				await unitOfWork.CreateTarsaction();
 
 				var existingCartItem = CartOfCustomer.CartItems.FirstOrDefault(e => e.ProductId == updateCartItemDTO.ProductId);
-				var discount = product.DiscountPercentage > 0 ? product.Price * product.DiscountPercentage / 100 : 0;
+				var discountPerUnit = product.DiscountPercentage > 0 ? (product.Price * product.DiscountPercentage / 100) : 0;
+				var totalDiscount = discountPerUnit * updateCartItemDTO.Quantity;
+				
 				if (existingCartItem is null)
 				{
 					CartItem cartItem = new CartItem()
 					{
 						CartId = CartOfCustomer.cartId,
 						ProductId = updateCartItemDTO.ProductId,
+						Discount = discountPerUnit,
 						UnitPrice = product.Price,
-						TotalPrice = (product.Price - discount) * updateCartItemDTO.Quantity,
-						Discount = discount,
+						TotalPrice = (product.Price * updateCartItemDTO.Quantity) - totalDiscount,
 						Quantity = updateCartItemDTO.Quantity,
 						CreatedAt = DateTime.Now,
 					};
@@ -162,9 +166,9 @@ namespace Bussines_Logic.Services.Services
 					return new ApiResponse<CartResponseDTO>(400, $"Adding {updateCartItemDTO.Quantity} exceeds available stock.");
 
 				existingCartItem.Quantity += updateCartItemDTO.Quantity;
+				existingCartItem.Discount += discountPerUnit;
 				existingCartItem.TotalPrice = (existingCartItem.UnitPrice - existingCartItem.Discount) * existingCartItem.Quantity;
 				existingCartItem.UpdatedAt = DateTime.Now;
-				existingCartItem.Discount += discount;
 
 				product.StockQuantity -= updateCartItemDTO.Quantity;
 				product.IsAvailable = product.StockQuantity == 0 ? false : true;
@@ -308,9 +312,9 @@ namespace Bussines_Logic.Services.Services
 						ProductName = itemCart.Product.ProductName,
 						Quantity = itemCart.Quantity,                        /////quentity for each product indvidule
 						TotalPrice = itemCart.TotalPrice,                   /////TotalPrice for each product indvidule
+						Discount = itemCart.Discount,
 						UnitPrice = itemCart.UnitPrice,
 						CartItemId = itemCart.CartItemId,
-						Discount = itemCart.Discount,
 					};
 					totalBasePrice += cartItem.Quantity * cartItem.UnitPrice;
 					totalDiscount += cartItem.Discount;      //tottal sum discount for all product

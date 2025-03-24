@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px;">
+    <div style="max-width: 700px; margin: auto; background-color: #ffffff; padding: 20px; border: 1px solid #dddddd;">
+        <!-- Header -->
+        <div style="background-color: #007bff; padding: 15px; text-align: center; color: #ffffff;">
+            <h2 style="margin: 0;">Order Confirmation</h2>
+        </div>
+
+        <!-- Greeting and Order Details -->
+        <p style="margin: 20px 0 5px 0;">Dear {CustomerFirstName} {CustomerLastName} ,</p>
+        <p style="margin: 5px 0 20px 0;">Thank you for your order. Please find your invoice below.</p>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr>
+                <td style="padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;"><strong>Order Number:</strong></td>
+                <td style="padding: 8px; border: 1px solid #dddddd;">{OrderNumber}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;"><strong>Order Date:</strong></td>
+                <td style="padding: 8px; border: 1px solid #dddddd;">{OrderDate}</td>
+            </tr>
+        </table>
+
+        <!-- Order Summary -->
+        <h3 style="color: #007bff; border-bottom: 2px solid #eeeeee; padding-bottom: 5px;">Order Summary</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr>
+                <td style="padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;"><strong>Sub Total:</strong></td>
+                <td style="padding: 8px; border: 1px solid #dddddd;">{SubTotal}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;"><strong>Discount:</strong></td>
+                <td style="padding: 8px; border: 1px solid #dddddd;">-{Discount}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;"><strong>Shipping Cost:</strong></td>
+                <td style="padding: 8px; border: 1px solid #dddddd;">{ShippingCost}</td>
+            </tr>
+            <tr style="font-weight: bold;">
+                <td style="padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;"><strong>Total Amount:</strong></td>
+                <td style="padding: 8px; border: 1px solid #dddddd;">{TotalAmount}</td>
+            </tr>
+        </table>
+
+        <!-- Order Items -->
+        <h3 style="color: #007bff; border-bottom: 2px solid #eeeeee; padding-bottom: 5px;">Order Items</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr style="background-color: #28a745; color: #ffffff;">
+                <th style="padding: 8px; border: 1px solid #dddddd;">Product</th>
+                <th style="padding: 8px; border: 1px solid #dddddd;">Quantity</th>
+                <th style="padding: 8px; border: 1px solid #dddddd;">Unit Price</th>
+                <th style="padding: 8px; border: 1px solid #dddddd;">Discount</th>
+                <th style="padding: 8px; border: 1px solid #dddddd;">Total Price</th>
+            </tr>
+            {OrderItems}
+        </table>
+
+        <!-- Addresses -->
+        <h3 style="color: #007bff; border-bottom: 2px solid #eeeeee; padding-bottom: 5px;">Addresses</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr>
+                <td style="width: 50%; vertical-align: top; padding: 8px; border: 1px solid #dddddd;">
+                    <strong>Billing Address</strong><br />
+                    {BillingAddressLine1}<br />
+                    {BillingAddressLine2}
+                    {BillingCity}, {BillingState} {BillingPostalCode}<br />
+                    {BillingCountry}
+                </td>
+                <td style="width: 50%; vertical-align: top; padding: 8px; border: 1px solid #dddddd;">
+                    <strong>Shipping Address</strong><br />
+                    {ShippingAddressLine1}<br />
+                    {ShippingAddressLine2}
+                    {ShippingCity}, {ShippingState} {ShippingPostalCode}<br />
+                    {ShippingCountry}
+                </td>
+            </tr>
+        </table>
+
+        <!-- Payment Details -->
+        <h3 style="color: #007bff; border-bottom: 2px solid #eeeeee; padding-bottom: 5px;">Payment Details</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr>
+                <td style="padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;"><strong>Payment Method:</strong></td>
+                <td style="padding: 8px; border: 1px solid #dddddd;">{PaymentMethod}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;"><strong>Payment Date:</strong></td>
+                <td style="padding: 8px; border: 1px solid #dddddd;">{PaymentDate}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;"><strong>Transaction ID:</strong></td>
+                <td style="padding: 8px; border: 1px solid #dddddd;">{TransactionId}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;"><strong>Status:</strong></td>
+                <td style="padding: 8px; border: 1px solid #dddddd;">{PaymentStatus}</td>
+            </tr>
+        </table>
+
+        <p style="margin-top: 20px;">If you have any questions, please contact our support team.</p>
+        <p>Best regards,<br />Your E-Commerce Store Team</p>
+    </div>
+</body>
+</html>

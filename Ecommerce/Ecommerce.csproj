@@ -26,4 +26,10 @@
     <Folder Include="wwwroot\Images\Product\RelatedImages\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\Templet\Email.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

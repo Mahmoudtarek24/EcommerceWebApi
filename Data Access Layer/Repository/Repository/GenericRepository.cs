@@ -29,6 +29,7 @@ namespace Data_Access_Layer.Repository.Repository
 				foreach(var Include in Includes)
 					query=query.Include(Include);	
 			}
+			
 			if(Filter !=null)
 			{
 				query=query.Where(Filter);

@@ -11,3 +11,6 @@ global using Bussines_Logic.DTO.ProductDto;
 global using Bussines_Logic.DTO.CartDto;
 global using Bussines_Logic.ResponseDTO;
 global using Bussines_Logic.ResponseDTO.CartShoppingDto;
+global using Bussines_Logic.DTO.DaymentDto;
+global using Bussines_Logic.ResponseDTO.PaymentRespondDto;
+global using Bussines_Logic.DTO.CancellationDto;

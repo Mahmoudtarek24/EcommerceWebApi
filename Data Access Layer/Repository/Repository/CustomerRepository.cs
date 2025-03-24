@@ -7,6 +7,5 @@ namespace Data_Access_Layer.Repository.Repository
 		public CustomerRepository(EcommerceDbContext context) : base(context)
 		{
 		}
-
 	}
 }

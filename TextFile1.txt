@@ -1,5 +1,5 @@
 ﻿                                              بسم الله الرحمن الرحيم
-  
+  pshb nvhy njzn eoct
 
                                                 Custome
 
@@ -109,11 +109,65 @@ Directly Ordering: The customer skips the cart entirely and provides the order d
 
 
 
+ ===> Order Is Different From Cart  (cart is open can add any time ) order is executed immedatilly 
+
+ 1- order on create action executed immediatelly 
+
+ 2- get order by OrderId to customer to know her order (Authorize Or Not)   <<<<<=========
+     (Allows administrators and customers to retrieve detailed information about specific orders)
+  3- Get orders By Customer Id 
+
+4- get all order to Admin get all executed order(Authorized)
+
+ 5- Action , And services to controll and change status of order
+
+ 6-Have contoller to controle/update on (order Status)
+
+ #######################################################################################################################
+
+                                                      Payment
+handle payment transaction through connect to exeternal services (Strip ,paypal) Ensures secure transmission
+ and storage of payment information.
+
+ payment record :store details information about each payment(payment method ,transaction ID ,amount,Status)
+معالجة الدفع: بتساعد في بدء وإدارة عمليات دفع الفلوس لما الزبون يطلب حاجة. بتدعم طرق دفع مختلفة زي الكريدت كارد
+الدفع عند الاستلام (COD)، وPayPal. 
+تضمن إن كل بيانات الدفع  بتتعالج بشكل مضبوط
+بتتصل بجيت وايات الدفع الخارجية عشان تضمن إن العمليات بتتم بشكل موثوق
 
 
 
+ payment first we create action to process Order by send (orderId , CustomerId) request for payment to type (we arrive or when
+ online) 
+
+ action to retrive payment occure by paymentId
+ 
+ another one to get payment by OrderId
+
+ another Service method and controller to update states of payment when day by when product arrive
+  
+##############################################################################################################################
+                                                      Cancellation
+allow customer TO cancel REquest Before shipping it
+
+cancellation request depend on order status
+
+Cancellation Requests: Customers can request order cancellations before the order is shipped. only if OrderStatus
+(Process,Pendibng)
 
 
+
+-Craete action ,Services To request to cansel Order 
+
+- (Admin) have action to ditect to accept it or refuse
+
+- action to get all canselation(Admine)
+
+- action to get cansalletion by id (Customer ,Admine)
+
+######################################################################################################################
+                                                  
+                                                  Refund Module
 
 
 

@@ -8,10 +8,9 @@ categor used ISdeleted in delete method
 
 
 
-#############calculaye tottal 
 
 
-
+======>Add arive data to order
 
 
 

@@ -4,6 +4,7 @@ using Data_Access_Layer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250323084559_AddCancellation")]
+    partial class AddCancellation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -560,65 +563,6 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("ProductImage");
                 });
 
-            modelBuilder.Entity("Data_Access_Layer.Models.Refund", b =>
-                {
-                    b.Property<int>("RefundId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RefundId"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(10, 3)
-                        .HasColumnType("decimal(10,3)");
-
-                    b.Property<int>("CancellationId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("InitiatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("PaymentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProcessedBy")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RefundMethod")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("RefundReason")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("TransactionId")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("RefundId");
-
-                    b.HasIndex("CancellationId")
-                        .IsUnique();
-
-                    b.HasIndex("PaymentId")
-                        .IsUnique();
-
-                    b.ToTable("refunds", t =>
-                        {
-                            t.HasCheckConstraint("AmountValue", "[Amount]>= 0.00 ");
-                        });
-                });
-
             modelBuilder.Entity("Data_Access_Layer.Models.Status", b =>
                 {
                     b.Property<int>("Id")
@@ -964,25 +908,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Data_Access_Layer.Models.Refund", b =>
-                {
-                    b.HasOne("Data_Access_Layer.Models.Cancellation", "cancellation")
-                        .WithOne("refund")
-                        .HasForeignKey("Data_Access_Layer.Models.Refund", "CancellationId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Data_Access_Layer.Models.Payment", "payment")
-                        .WithOne("refund")
-                        .HasForeignKey("Data_Access_Layer.Models.Refund", "PaymentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("cancellation");
-
-                    b.Navigation("payment");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1034,12 +959,6 @@ namespace DataAccessLayer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Data_Access_Layer.Models.Cancellation", b =>
-                {
-                    b.Navigation("refund")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Data_Access_Layer.Models.Cart", b =>
                 {
                     b.Navigation("CartItems");
@@ -1067,12 +986,6 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("orderItems");
 
                     b.Navigation("payment")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Data_Access_Layer.Models.Payment", b =>
-                {
-                    b.Navigation("refund")
                         .IsRequired();
                 });
 

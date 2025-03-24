@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body style='font-family: Arial, sans-serif; background-color: #f0f8ff; margin: 0; padding: 20px;'>
+    <div style='max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border: 1px solid #cccccc;'>
+        <!-- Header -->
+        <div style='background-color: #dc3545; padding: 15px; text-align: center; color: #ffffff;'>
+            <h2 style='margin: 0;'>Cancellation Request {Status}</h2>
+        </div>
+
+        <!-- Greeting -->
+        <p style='margin: 20px 0 5px 0;'>Dear {FirstName} {LastName},</p>
+
+        <!-- Cancellation Details -->
+        <p style='margin: 5px 0 20px 0;'>Your cancellation request for Order <strong>#{OrderNumber}</strong> has been <span style='color: #dc3545; font-weight: bold;'>{Status}</span>.</p>
+
+        <h3 style='color: #dc3545; border-bottom: 2px solid #eeeeee; padding-bottom: 5px;'>Cancellation Details</h3>
+        <table style='width: 100%; border-collapse: collapse; margin-bottom: 20px;'>
+            <tr>
+                <td style='padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;'><strong>Order Number:</strong></td>
+                <td style='padding: 8px; border: 1px solid #dddddd;'>{OrderNumber}</td>
+            </tr>
+            <tr>
+                <td style='padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;'><strong>Cancellation Reason:</strong></td>
+                <td style='padding: 8px; border: 1px solid #dddddd;'>{Reason}</td>
+            </tr>
+            <tr>
+                <td style='padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;'><strong>Admin Remark:</strong></td>
+                <td style='padding: 8px; border: 1px solid #dddddd;'>{Remarks}</td>
+            </tr>
+            <tr>
+                <td style='padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;'><strong>Requested At:</strong></td>
+                <td style='padding: 8px; border: 1px solid #dddddd;'>{RequestedAt}</td>
+            </tr>
+            <tr>
+                <td style='padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;'><strong>Processed At:</strong></td>
+                <td style='padding: 8px; border: 1px solid #dddddd;'>{ProcessedAt}</td>
+            </tr>
+            <tr>
+                <td style='padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;'><strong>Order Amount:</strong></td>
+                <td style='padding: 8px; border: 1px solid #dddddd;'>{OrderAmount}</td>
+            </tr>
+            <tr>
+                <td style='padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;'><strong>Cancellation Charges:</strong></td>
+                <td style='padding: 8px; border: 1px solid #dddddd;'>{CancellationCharges}</td>
+            </tr>
+            <tr>
+                <td style='padding: 8px; background-color: #f8f8f8; border: 1px solid #dddddd;'><strong>Amount to be Refunded:</strong></td>
+                <td style='padding: 8px; border: 1px solid #dddddd;'>{OrderAmount}</td>
+            </tr>
+        </table>
+
+        <!-- Footer -->
+        <div style='background-color:#f1f3f5; padding:15px; text-align:center; font-size:14px; color:#6c757d; margin-top:20px;'>
+            <p style='margin:0;'>Thank you for choosing Our E-Commerce Store.</p>
+            <div style='margin-top:10px;'>
+
+
+                <a href='https://facebook.com' style='text-decoration:none; margin:0 5px;'>
+                    <img src='https://cdn-icons-png.flaticon.com/512/733/733547.png' alt='Facebook' style='width:32px;'>
+                </a> 
+
+
+                <a href="https://www.linkedin.com/in/mahmoud-tarek-077060313/" style="" text-decoration:none; margin:0 5px;"">
+                    <img src="" https: //cdn-icons-png.flaticon.com/512/174/174857.png"" alt="" LinkedIn"" style="" width:32px;"">
+                </a>
+                <a href="https://github.com/Mahmoudtarek24" style="" text-decoration:none; margin:0 5px;"">
+                    <img src="https://pngimg.com/uploads/github/github_PNG65.png" alt="GitHub" style="" style="" width:32px;"">
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 ﻿namespace Bussines_Logic.DTO.OrderDto
 {
-	public class OrderItemCreateDTO
+	public class OrderItemCreateDTO:IDto
 	{
 		[Required(ErrorMessage = Error.RequiredFiled)]
 		public int ProductId { get; set; }

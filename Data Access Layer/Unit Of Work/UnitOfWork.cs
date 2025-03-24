@@ -4,21 +4,17 @@ namespace Data_Access_Layer.Unit_Of_Work
 	public class UnitOfWork : IUnitOfWork
 	{
 		public CustomerRepository CustomerRepository { get; }
-
 		public AddressRepository AddressRepository { get; }
 		public CategoryRepository CategoryRepository { get; }
-
 		public ProductRepository ProductRepository { get; }
-
 		public ImageProducrRepository imageProducrRepository { get; }
-
 		public CartItemRepository CartItemRepository { get; }	
-
 		public CartRepository CartRepository { get; }
-
 		public OrderItemRepository OrderItemRepository { get; }
-
 		public OrderRepository OrderRepository { get; }
+		public PaymentRepository PaymentRepository { get; }
+		public CancellationRepository cancellationRepository { get; }
+		public RefundRepository RefundRepository { get; }
 
 		private readonly EcommerceDbContext context;
 		private IDbContextTransaction transaction;
@@ -34,6 +30,9 @@ namespace Data_Access_Layer.Unit_Of_Work
 			CartItemRepository= new CartItemRepository(context);	
 			OrderItemRepository= new OrderItemRepository(context);	
 			OrderRepository= new OrderRepository(context);	
+			PaymentRepository= new PaymentRepository(context);
+		    cancellationRepository =new CancellationRepository(context);
+			RefundRepository= new RefundRepository(context);	
 		}
 
 		public async Task Commit()
@@ -54,6 +53,12 @@ namespace Data_Access_Layer.Unit_Of_Work
 		public async  Task Save()
 		{
 		   await context.SaveChangesAsync();
+			Dispose();
+		}
+
+		public void Dispose()
+		{
+			context.Dispose();	
 		}
 	}
 }

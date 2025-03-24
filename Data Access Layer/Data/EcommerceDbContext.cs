@@ -40,6 +40,16 @@ namespace Data_Access_Layer.Data
 			//Order Properity
 			modelBuilder.Entity<Order>().Property(e => e.OrderStatus).HasConversion<string>().IsRequired().HasMaxLength(30);
 
+			//Payment properity
+			modelBuilder.Entity<Payment>().Property(e => e.PaymentStatus).HasConversion<string>().IsRequired().HasMaxLength(30);
+
+			//Cancellation properity
+			modelBuilder.Entity<Cancellation>().Property(e => e.cancellationStatus).HasConversion<string>().IsRequired().HasMaxLength(30);
+
+			//Refund properity
+			modelBuilder.Entity<Refund>().Property(e => e.Status).HasConversion<string>().IsRequired().HasMaxLength(30);
+			modelBuilder.Entity<Refund>().HasCheckConstraint("AmountValue", "[Amount]>= 0.00 ");
+
 
 			foreach (var entitys in modelBuilder.Model.GetEntityTypes())
 			{
@@ -77,16 +87,19 @@ namespace Data_Access_Layer.Data
 				}
 			}
 
-			//one-to-one    ApplicationUser-Custome , CartItem-Product  ,Order-BillingAddress
-			//  Order-ShippingAddress
+			//one-to-one    ApplicationUser-Custome , CartItem-Product   , Payment-Order ,Cancellation-Order
+			// Refund-Payment
+
 			modelBuilder.Entity<Customer>().HasOne(e => e.applicationUser).WithOne().HasForeignKey<Customer>(e => e.UserId);
 			modelBuilder.Entity<CartItem>().HasOne(e => e.Product).WithOne().HasForeignKey<CartItem>(e => e.ProductId);
-			//modelBuilder.Entity<Order>().HasOne(e => e.BillingAddress).WithOne().HasForeignKey<Order>(e => e.BillingAddressId);
-			modelBuilder.Entity<Order>().HasOne(e => e.ShippingAddress).WithOne().HasForeignKey<Order>(e => e.ShippingAddressId);
+			modelBuilder.Entity<Payment>().HasOne(e=>e.Order).WithOne(e=>e.payment).HasForeignKey<Payment>(e=>e.OrderId);
+			modelBuilder.Entity<Cancellation>().HasOne(e => e.Order).WithOne(e => e.cancellation).HasForeignKey<Cancellation>(e => e.OrderId);
+			modelBuilder.Entity<Refund>().HasOne(e => e.payment).WithOne(e => e.refund).HasForeignKey<Refund>(e => e.PaymentId);
+			modelBuilder.Entity<Refund>().HasOne(e => e.cancellation).WithOne(e => e.refund).HasForeignKey<Refund>(e => e.CancellationId);	
 
 
 			//one-to-many  custome-address ,category-product  , Product-ProductImages   , Customer-Order
-			//  Order-OrderItem  , Product-OrderItem
+			//  Order-OrderItem  , Product-OrderItem   ,Order-BillingAddress      Order-ShippingAddress
 			modelBuilder.Entity<Customer>().HasMany(e => e.Addresses).WithOne(e => e.Customer);
 			modelBuilder.Entity<Category>().HasMany(e => e.products).WithOne(e => e.Category);
 			modelBuilder.Entity<Product>().HasMany(e=>e.productImages).WithOne(e => e.Product);
@@ -94,7 +107,26 @@ namespace Data_Access_Layer.Data
 			modelBuilder.Entity<Customer>().HasMany(e=>e.carts).WithOne(e => e.Customer);
 			modelBuilder.Entity<Customer>().HasMany(e => e.orders).WithOne(e => e.customer);
 			modelBuilder.Entity<Order>().HasMany(e => e.orderItems).WithOne(e => e.order);
-			modelBuilder.Entity<Product>().HasMany(e=>e.orderItems).WithOne(e => e.product);		
+			modelBuilder.Entity<Product>().HasMany(e=>e.orderItems).WithOne(e => e.product);	
+			modelBuilder.Entity<Order>().HasOne(e=>e.BillingAddress).WithMany().HasForeignKey(e=>e.BillingAddressId);		
+			modelBuilder.Entity<Order>().HasOne(e=>e.ShippingAddress).WithMany().HasForeignKey(e=>e.ShippingAddressId);
+
+			modelBuilder.Entity<Status>().HasData(
+			   //Order Statuses
+			   new Status { Id = 1, Name = "Pending" }, //Can be used to with Order, Paymeny, Cancellation, and Refund
+			   new Status { Id = 2, Name = "Processing" },
+			   new Status { Id = 3, Name = "Shipped" },
+			   new Status { Id = 4, Name = "Delivered" },
+			   new Status { Id = 5, Name = "Canceled" },
+			   //Refund Status
+			   new Status { Id = 6, Name = "Completed" },
+			   new Status { Id = 7, Name = "Failed" },
+			   //Cancellation Statuses
+			   new Status { Id = 8, Name = "Approved" },
+			   new Status { Id = 9, Name = "Rejected" },
+			   //Payment Status
+			   new Status { Id = 10, Name = "Refunded" }
+		   );
 		}
 		public DbSet<Customer> Customers { get; set; }
 		public DbSet<Address> Addresss { get; set; }
@@ -105,5 +137,9 @@ namespace Data_Access_Layer.Data
 		public DbSet<CartItem> cartItems { get; set; }		
 		public DbSet<Order> Orders { get; set; }
 		public DbSet<OrderItem> OrderItems { get; set; }
+		public DbSet<Status> statuses { get; set; }	
+		public DbSet<Payment> payments { get; set; }	
+		public DbSet<Cancellation> cancellations { get; set; }	
+		public DbSet<Refund> refunds { get; set; }	
 	}
 }

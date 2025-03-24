@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    [Migration("20250320060554_AddOrderOrderItemTables")]
-    partial class AddOrderOrderItemTables
+    [Migration("20250321021733_AddStatus")]
+    partial class AddStatus
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -345,8 +345,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("ShippingAddressId")
-                        .IsUnique();
+                    b.HasIndex("ShippingAddressId");
 
                     b.ToTable("Orders");
                 });
@@ -471,6 +470,24 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductImage");
+                });
+
+            modelBuilder.Entity("Data_Access_Layer.Models.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("statuses");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -673,8 +690,8 @@ namespace DataAccessLayer.Migrations
                         .IsRequired();
 
                     b.HasOne("Data_Access_Layer.Models.Address", "ShippingAddress")
-                        .WithOne()
-                        .HasForeignKey("Data_Access_Layer.Models.Order", "ShippingAddressId")
+                        .WithMany()
+                        .HasForeignKey("ShippingAddressId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

@@ -1,7 +1,7 @@
 ﻿
 namespace Data_Access_Layer.Unit_Of_Work
 {
-	public interface IUnitOfWork
+	public interface IUnitOfWork : IDisposable	
 	{
 		CustomerRepository CustomerRepository { get; }	
 		AddressRepository AddressRepository { get; }
@@ -11,7 +11,10 @@ namespace Data_Access_Layer.Unit_Of_Work
 		CartItemRepository CartItemRepository { get; }
 		CartRepository CartRepository { get; }
 		OrderItemRepository OrderItemRepository { get; }
-		OrderRepository OrderRepository { get; }	
+		OrderRepository OrderRepository { get; }
+		PaymentRepository PaymentRepository { get; }
+		CancellationRepository cancellationRepository { get; }
+		RefundRepository RefundRepository { get; }	
 		Task Commit();
 		Task RollBack();
 		Task Save();

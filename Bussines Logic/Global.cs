@@ -20,6 +20,15 @@ global using Bussines_Logic.DTO.CartDto;
 global using Bussines_Logic.ResponseDTO.CartShoppingDto;
 global using Bussines_Logic.ResponseDTO.OrderRespondDto;
 global using Bussines_Logic.DTO.OrderDto;
-
-
+global using Microsoft.AspNetCore.Identity.UI.Services;
+global using Bussines_Logic.Settings;
+global using Microsoft.Extensions.Options;
+global using System.Net.Mail;
+global using Microsoft.Extensions.Hosting;
+global using System.Net;
+global using Bussines_Logic.DTO.DaymentDto;
+global using Bussines_Logic.ResponseDTO.PaymentRespondDto;
+global using Bussines_Logic.DTO.PaymentDto;
+global using Bussines_Logic.ResponseDTO.CancellationRespondDto;
+global using Bussines_Logic.DTO.CancellationDto;
 
