@@ -9,6 +9,7 @@ namespace Data_Access_Layer.Repository.IRepository
 	{
 	    Task<IEnumerable<T>> GetAllEntitiesAsync(Expression<Func<T, bool>> Filter = null, string[]Includes =null, bool track=false);
 		Task<T?> GetEntityAsync(Expression<Func<T, bool>> filter, string[] Includes = null, bool tracked = false);
+		Task<bool> GetAnyEntityAsync(Expression<Func<T, bool>> filter, string[] Includes = null, bool tracked = false);
 		Task<T> GetByIdAsync(int id);
 		Task Insert(T entity);
 		Task Delete(T entity);	

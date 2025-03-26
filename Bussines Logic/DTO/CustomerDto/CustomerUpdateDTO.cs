@@ -30,8 +30,9 @@ namespace Bussines_Logic.DTO
 		public string PhoneNumber { get; set; }
 
 
-		//[Required(ErrorMessage = Error.RequiredFiled)]
-		//public DateTime DateOfBirth { get; set; }
+		[Required(ErrorMessage = Error.RequiredFiled)]
+		public DateTime DateOfBirth { get; set; }
+		public IFormFile? ImageData { get; set; }
 
 	}
 }

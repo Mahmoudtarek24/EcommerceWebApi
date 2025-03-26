@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Bussines_Logic.DTO.CustomerDto;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Ecommerce.Controllers
 {
@@ -15,7 +17,7 @@ namespace Ecommerce.Controllers
 		}
 
 		[HttpPost("Register")]
-		public async Task<IActionResult> RegisterCustomer([FromBody] CustomerRegistrationDTO customerDto)
+		public async Task<IActionResult> RegisterCustomer([FromForm] CustomerRegistrationDTO customerDto)
 		{
 			if(!ModelState.IsValid) 
        			return BadRequest(ModelState);
@@ -47,8 +49,8 @@ namespace Ecommerce.Controllers
 				return BadRequest(responsed);
 			return Ok(responsed);
 		}
-		[HttpPost("EditCustome")]
-		public async Task<IActionResult> EditCustome([FromBody] CustomerUpdateDTO Dto)
+		[HttpPost("EditCustomer")]
+		public async Task<IActionResult> EditCustomer([FromForm] CustomerUpdateDTO Dto)
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
@@ -59,7 +61,7 @@ namespace Ecommerce.Controllers
 			return Ok(responsed);
 		}
 		[HttpGet("GetCustomerById/{id}")]
-		public async Task<IActionResult> EditCustome(int id)
+		public async Task<IActionResult> CustomerById(int id)
 		{
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
@@ -80,6 +82,32 @@ namespace Ecommerce.Controllers
 				return BadRequest(responsed);
 			return Ok(responsed);
 		}
+		[HttpPost("ForgotPassword")]
+		public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
+		{
 
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			var respond=await customerService.ForgotPasswordAsync(dto);	
+			if(respond.StatusCode!=200)
+				return StatusCode(respond.StatusCode,respond);
+
+			return Ok(respond);	
+
+		}
+		[HttpPost("ResetPassword")]////123456789Mm#
+		public async Task<IActionResult> ResetPassword(ResetPasswordDTO dTO)
+		{
+			if(!ModelState.IsValid) 
+				return BadRequest(ModelState);
+
+			var respond=await customerService.ResetPasswordAsync(dTO);	
+			if(respond.StatusCode!=200)
+				return StatusCode(respond.StatusCode,respond);
+			
+			return Ok(respond);	
+		}
+		
 	}
 }

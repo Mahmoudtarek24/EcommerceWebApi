@@ -14,7 +14,9 @@ namespace Data_Access_Layer.Unit_Of_Work
 		OrderRepository OrderRepository { get; }
 		PaymentRepository PaymentRepository { get; }
 		CancellationRepository cancellationRepository { get; }
-		RefundRepository RefundRepository { get; }	
+		RefundRepository RefundRepository { get; }
+		FeedbackRepository FeedbackRepository { get; }
+		AdminRepository AdminRepository { get; }	
 		Task Commit();
 		Task RollBack();
 		Task Save();

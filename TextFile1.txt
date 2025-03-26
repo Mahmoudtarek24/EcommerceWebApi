@@ -175,3 +175,15 @@ Cancellation Requests: Customers can request order cancellations before the orde
 
 
 
+##############################################################################################################################
+                                               FeeedBack Modules
+
+1-allow user to add comment and rate to product only how buy it
+
+2- add action and services to show all comment for customeres  on specific product 
+
+3-add Update method to customer can update product
+
+4- add method so can (Admin, customer )delete feedback
+
+5- get all feedback for admin 

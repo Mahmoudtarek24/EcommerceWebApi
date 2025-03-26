@@ -4,8 +4,8 @@ namespace Bussines_Logic.Services.Services
 	public class ProductServices<D> : IGenericService<ProductResponseDTO, D> where D : class
 	{
 		public IUnitOfWork unitOfWork { get; }
-		private readonly string ProductImageFolderPath = "/Images/Product";
-		private readonly string ProductRelatedImagesFolderPath = "/Images/Product/RelatedImages";
+		private readonly string ProductImageFolderPath = @"\Product";
+		private readonly string ProductRelatedImagesFolderPath = @"\RelatedImagesProduct";
 		private readonly IImageService imageService;
 		public ProductServices(IUnitOfWork unitOfWork, IImageService imageService)
 		{
@@ -18,6 +18,9 @@ namespace Bussines_Logic.Services.Services
 			if (createDto is ProductCreateDTO productDto)
 			{
 				var product = new Product();
+				UploadResult imageResult = null;
+				UploadResult imageRelatedResult = null;
+
 				try
 				{
 					//validate category id 
@@ -38,12 +41,12 @@ namespace Bussines_Logic.Services.Services
 
 					product.IsAvailable = product.StockQuantity == 0 ?  false : true;
 
-					var mainImageProductResult = await imageService.UploadImage(productDto.MainProductIamge, ProductImageFolderPath);
+					 imageResult = await imageService.UploadImage(productDto.MainProductIamge, ProductImageFolderPath);
 
-					if (!mainImageProductResult.IsUploaded)
-						return new ApiResponse<ProductResponseDTO>(400, mainImageProductResult.ErrorMessage);
+					if (!imageResult.IsUploaded)
+						return new ApiResponse<ProductResponseDTO>(400, imageResult.ErrorMessage);
 
-					product.mainProductImage = mainImageProductResult.ImageName;
+					product.mainProductImage = imageResult.ImageName;
 
 					await unitOfWork.ProductRepository.Insert(product);
 					await unitOfWork.Save();
@@ -53,13 +56,13 @@ namespace Bussines_Logic.Services.Services
 
 						foreach (var relatedProductImages in productDto.ProductImages)
 						{
-							var relatedImage = await imageService.UploadImage(relatedProductImages, ProductRelatedImagesFolderPath);
-							if (!relatedImage.IsUploaded)
-								return new ApiResponse<ProductResponseDTO>(400, relatedImage.ErrorMessage);
+							imageRelatedResult = await imageService.UploadImage(relatedProductImages, ProductRelatedImagesFolderPath);
+							if (!imageRelatedResult.IsUploaded)
+								return new ApiResponse<ProductResponseDTO>(400, imageRelatedResult.ErrorMessage);
 
 							var ImageProduct = new ProductImage()
 							{
-								ImageName = relatedImage.ImageName,
+								ImageName = imageRelatedResult.ImageName,
 								ProductId = product.ProductId,
 							};
 							await unitOfWork.imageProducrRepository.Insert(ImageProduct);
@@ -93,10 +96,10 @@ namespace Bussines_Logic.Services.Services
 				}
 				catch (Exception ex)
 				{
-					imageService.DeleteImage($"{ProductImageFolderPath}/{product.mainProductImage}");
+					imageService.DeleteImage($"{ProductImageFolderPath}/{imageResult.ImageName}");
 					if (product.mainProductImage != null)
 					{
-						foreach (var image in product.productImages)
+						foreach (var image in product.productImages.ToList())
 						{
 							imageService.DeleteImage($"{ProductRelatedImagesFolderPath}/{image.ImageName}");
 						}
@@ -211,12 +214,12 @@ namespace Bussines_Logic.Services.Services
 					//Delete Main Image
 					imageService.DeleteImage($"{ProductImageFolderPath}/{product.mainProductImage}");
 
-					var mainImageProductResult = await imageService.UploadImage(productDto.MainProductIamge, ProductImageFolderPath);
+				//	var mainImageProductResult = await imageService.UploadImage(productDto.MainProductIamge, ProductImageFolderPath);
 
-					if (!mainImageProductResult.IsUploaded)
-						return new ApiResponse<ProductResponseDTO>(400, mainImageProductResult.ErrorMessage);
+					//if (!mainImageProductResult.IsUploaded)
+					//	return new ApiResponse<ProductResponseDTO>(400, mainImageProductResult.ErrorMessage);
 
-					product.mainProductImage = mainImageProductResult.ImageName;
+					//product.mainProductImage = mainImageProductResult.ImageName;
 
 					await unitOfWork.Save();
 
@@ -228,16 +231,16 @@ namespace Bussines_Logic.Services.Services
 
 					foreach (var relatedProductImages in productDto.ProductImages)
 					{
-						var relatedImage = await imageService.UploadImage(relatedProductImages, ProductRelatedImagesFolderPath);
-						if (!relatedImage.IsUploaded)
-							return new ApiResponse<ProductResponseDTO>(400, relatedImage.ErrorMessage);
+						//var relatedImage = await imageService.UploadImage(relatedProductImages, ProductRelatedImagesFolderPath);
+						//if (!relatedImage.IsUploaded)
+						//	return new ApiResponse<ProductResponseDTO>(400, relatedImage.ErrorMessage);
 
-						var ImageProduct = new ProductImage()
-						{
-							ImageName = relatedImage.ImageName,
-							ProductId = product.ProductId,
-						};
-						await unitOfWork.imageProducrRepository.Insert(ImageProduct);
+						//var ImageProduct = new ProductImage()
+						//{
+						//	ImageName = relatedImage.ImageName,
+						//	ProductId = product.ProductId,
+						//};
+						//await unitOfWork.imageProducrRepository.Insert(ImageProduct);
 						await unitOfWork.Save();
 					}
 

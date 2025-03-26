@@ -37,7 +37,9 @@ namespace Ecommerce
 			builder.Services.AddScoped<ShoppingCartService>();
 			builder.Services.AddScoped<PaymentServices>();
 			builder.Services.AddScoped<CancellationServices>();
-
+			builder.Services.AddScoped<FeedBackServices>();
+			builder.Services.AddScoped<AdminServices>();
+			builder.Services.AddSingleton<EmailVerification>();
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.

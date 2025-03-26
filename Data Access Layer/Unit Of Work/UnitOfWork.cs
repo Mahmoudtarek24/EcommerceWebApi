@@ -15,6 +15,8 @@ namespace Data_Access_Layer.Unit_Of_Work
 		public PaymentRepository PaymentRepository { get; }
 		public CancellationRepository cancellationRepository { get; }
 		public RefundRepository RefundRepository { get; }
+		public FeedbackRepository FeedbackRepository { get; }
+		public AdminRepository AdminRepository { get; }	
 
 		private readonly EcommerceDbContext context;
 		private IDbContextTransaction transaction;
@@ -33,6 +35,8 @@ namespace Data_Access_Layer.Unit_Of_Work
 			PaymentRepository= new PaymentRepository(context);
 		    cancellationRepository =new CancellationRepository(context);
 			RefundRepository= new RefundRepository(context);	
+			FeedbackRepository =new FeedbackRepository(context);	
+			AdminRepository=new AdminRepository(context);	
 		}
 
 		public async Task Commit()
@@ -53,7 +57,6 @@ namespace Data_Access_Layer.Unit_Of_Work
 		public async  Task Save()
 		{
 		   await context.SaveChangesAsync();
-			Dispose();
 		}
 
 		public void Dispose()

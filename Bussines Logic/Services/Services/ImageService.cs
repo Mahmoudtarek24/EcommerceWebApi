@@ -1,29 +1,30 @@
 ﻿
+using Microsoft.AspNetCore.Hosting;
+
 namespace Bussines_Logic.Services.Services
 {
 	public class ImageService : IImageService
 	{
 		private readonly IWebHostEnvironment webHostEnvironment;
-		private readonly List<string> allowExtensions = new List<string>() { ".jpg", ".jpeg", ".png" };	
-		private readonly int maxSize= 2097152;
+		private readonly List<string> allowExtensions = new List<string>() { ".jpg", ".jpeg", ".png" };
+		private readonly int maxSize = 2097152;
 		public ImageService(IWebHostEnvironment webHostEnvironment)
 		{
-			this.webHostEnvironment = webHostEnvironment;	
+			this.webHostEnvironment = webHostEnvironment;
 		}
-
-		public async Task<UploadResult> UploadImage(IFormFile image,string folderPath )
+		public async Task<UploadResult> UploadImage(IFormFile image, string folderPath)
 		{
 			var FolderPath = Path.Combine(webHostEnvironment.WebRootPath, folderPath);
-			if(!Directory.Exists(FolderPath)) 
+			if (!Directory.Exists(FolderPath))
 			{
-				Directory.CreateDirectory(FolderPath);		
-			}	
+				Directory.CreateDirectory(FolderPath);
+			}
 
 			var extenstion = Path.GetExtension(image.FileName);
 
 			if (!allowExtensions.Contains(extenstion))
 				return new UploadResult { ErrorMessage = Error.NotAllowedExtension, IsUploaded = false };
-			if(image.Length> maxSize)
+			if (image.Length > maxSize)
 				return new UploadResult { ErrorMessage = Error.MaxSize, IsUploaded = false };
 
 
@@ -38,10 +39,10 @@ namespace Bussines_Logic.Services.Services
 			return new UploadResult { ImageName = imageName, IsUploaded = true };
 		}
 
-		public void DeleteImage(string ImagePath) 
+		public void DeleteImage(string ImagePath)
 		{
-			var oldImagePath = $"{webHostEnvironment.WebRootPath}/{ImagePath}";///  /image/propduct/fdgffbfggfr.jpg
-		
+			var oldImagePath = $"{webHostEnvironment.WebRootPath}/{ImagePath}";
+
 			if (File.Exists(oldImagePath))
 				File.Delete(oldImagePath);
 		}

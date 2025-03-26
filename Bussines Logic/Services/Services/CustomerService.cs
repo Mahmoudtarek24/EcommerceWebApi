@@ -1,20 +1,36 @@
 ﻿
+using Data_Access_Layer.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace Bussines_Logic.Services.Services
 {
 	public class CustomerService<D> : IGenericService<CustomerResponseDTO, D> where D : class
 	{
 		public IUnitOfWork unitOfWork { get; }
 		private readonly UserManager<ApplicationUser> userManager;
-		public CustomerService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+		private readonly SignInManager<ApplicationUser> signInManager;	
+		private readonly IImageService imageService;
+		private readonly string CustomerImageFolderPath = @"\Customer";
+		private readonly IEmailSender emailSender;
+		private readonly EmailVerification emailVerification;
+		private readonly EcommerceDbContext context;
+		public CustomerService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, IImageService imageService
+			, IEmailSender emailSender , EmailVerification emailVerification,SignInManager<ApplicationUser> signInManager ,EcommerceDbContext context) 
 		{
 			this.unitOfWork = unitOfWork;
 			this.userManager = userManager;
+			this.imageService = imageService;
+			this.emailSender = emailSender;
+			this.emailVerification = emailVerification;	
+			this.signInManager = signInManager;	
+			this.context = context;	
 		}
 		//Register	Customer
 		public async Task<ApiResponse<CustomerResponseDTO>> CreateAsync(D createDto)
 		{
 			if (createDto is CustomerRegistrationDTO customerDto)
 			{
+				UploadResult imageResult = null;
 				try
 				{
 					await unitOfWork.CreateTarsaction();
@@ -35,46 +51,43 @@ namespace Bussines_Logic.Services.Services
 						LastName = customerDto.LastName,
 						PhoneNumber = customerDto.PhoneNumber,
 					};
+					if (customerDto.ImageData is not null)
+					{
+						imageResult = await imageService.UploadImage(customerDto.ImageData, CustomerImageFolderPath);
+						if (!imageResult.IsUploaded)
+							return new ApiResponse<CustomerResponseDTO>(400, imageResult.ErrorMessage);
+						user.ProfileImage = imageResult.ImageName;
 
+					}
 					var result = await userManager.CreateAsync(user, customerDto.Password);
 					if (!result.Succeeded)
 					{
-						var response = new ApiResponse<CustomerResponseDTO>();
+						var errorRespond = new ApiResponse<CustomerResponseDTO>();
 						foreach (var error in result.Errors)
 						{
-							response.Errors.Add($"{error.Description} ,");
+							errorRespond.Errors.Add($"{error.Description} ,");
 						}
-						return response;
+						return errorRespond;
 					}
 
 
 					var customer = new Customer()
 					{
-						//DateOfBirth = customerDto.DateOfBirth,
+						DateOfBirth = customerDto.DateOfBirth,
 						UserId = user.Id,
 					};
 					await unitOfWork.CustomerRepository.Insert(customer);
 					await unitOfWork.Save();
 					await unitOfWork.Commit();
 
-					var customerRespond = new CustomerResponseDTO()
-					{
-						CustomerId = customer.Id,
-						DateOfBirth = customer.DateOfBirth,
-						FirstName = user.FirstName,
-						lastName = user.LastName,
-						Email = user.Email,
-						PhoneNumber = user.PhoneNumber,
-						UserName= user.UserName,	
-					};
-
+					var response = MapCustomerToDTO(customer);
 					//TODO  Return Token
-					return new ApiResponse<CustomerResponseDTO>(200, customerRespond);
-
+					return new ApiResponse<CustomerResponseDTO>(200, response);
 				}
 				catch (Exception ex)
 				{
-					unitOfWork.RollBack();
+					imageService.DeleteImage($"{CustomerImageFolderPath}/{imageResult?.ImageName}");
+					await unitOfWork.RollBack();
 					return new ApiResponse<CustomerResponseDTO>(500, $"An unexpected error occurred while processing your request, Error: {ex.Message}");
 				}
 			}
@@ -125,9 +138,6 @@ namespace Bussines_Logic.Services.Services
 		{
 			try
 			{
-
-				//need to change password
-
 				string[] Includes = { "applicationUser" };
 				var Customer = await unitOfWork.CustomerRepository.GetEntityAsync(e => e.Id == changePasswordDTO.CustomerId, Includes);
 
@@ -161,6 +171,8 @@ namespace Bussines_Logic.Services.Services
 		{
 			if (upateDto is CustomerUpdateDTO updateDTO)
 			{
+				UploadResult imageResult = null;
+
 				try
 				{
 					string[] Includes = { "applicationUser" };
@@ -184,52 +196,51 @@ namespace Bussines_Logic.Services.Services
 					Customer.applicationUser.LastName = updateDTO.LastName;
 					Customer.applicationUser.UserName = updateDTO.UserName;
 					Customer.applicationUser.PhoneNumber = updateDTO.PhoneNumber;
-					//Customer.DateOfBirth = updateDTO.DateOfBirth;
+					Customer.DateOfBirth = updateDTO.DateOfBirth;
+					if (updateDTO.ImageData is not null)
+					{
+						imageService.DeleteImage($"{CustomerImageFolderPath}/{Customer.applicationUser.ProfileImage}");
+						imageResult = await imageService.UploadImage(updateDTO.ImageData, CustomerImageFolderPath);
+						if (!imageResult.IsUploaded)
+							return new ApiResponse<CustomerResponseDTO>(400, imageResult.ErrorMessage);
+						Customer.applicationUser.ProfileImage = imageResult.ImageName;
 
+					}
 					await userManager.UpdateAsync(Customer.applicationUser);
 					await unitOfWork.Save();
 					await unitOfWork.Commit();
 
-					var updateResponse = new CustomerResponseDTO
-					{
-						message = $"Customer with Id {updateDTO.CustomerId} , FullName {Customer.applicationUser.FirstName + " " + Customer.applicationUser.LastName} updated successfully."
-					};
-					return new ApiResponse<CustomerResponseDTO>(200, updateResponse);
+					var response = MapCustomerToDTO(Customer);
+					return new ApiResponse<CustomerResponseDTO>(200, response);
 				}
 				catch (Exception ex)
 				{
+					imageService.DeleteImage($"{CustomerImageFolderPath}/{imageResult?.ImageName}");
 					unitOfWork.RollBack();
 					return new ApiResponse<CustomerResponseDTO>(500, $"An unexpected error occurred while processing your request, Error: {ex.Message}");
 				}
 			}
 			else
 			{
-					return new ApiResponse<CustomerResponseDTO>(500, $"Invalid DTO type for customer registration.");
+				return new ApiResponse<CustomerResponseDTO>(500, $"Invalid DTO type for customer registration.");
 			}
 		}
 
 		public async Task<ApiResponse<CustomerResponseDTO>> GetByIdAsync(int id)
 		{
-			try {
+			try
+			{
 				string[] Includes = { "applicationUser" };
-				var customer=await unitOfWork.CustomerRepository.GetEntityAsync(e=>e.Id==id,Includes,true);
+				var customer = await unitOfWork.CustomerRepository.GetEntityAsync(e => e.Id == id, Includes, true);
 				if (customer is null)
-					return new  ApiResponse<CustomerResponseDTO>(404, "Customer not found.");
+					return new ApiResponse<CustomerResponseDTO>(404, "Customer not found.");
 
-				var response = new CustomerResponseDTO()
-				{
-					DateOfBirth = customer.DateOfBirth,
-					CustomerId = customer.Id,
-					PhoneNumber = customer.applicationUser.PhoneNumber,
-					Email = customer.applicationUser.Email,
-					FirstName = customer.applicationUser.FirstName,
-					UserName = customer.applicationUser.UserName,
-					lastName = customer.applicationUser.LastName,
-				};
+				var response = MapCustomerToDTO(customer);
 				return new ApiResponse<CustomerResponseDTO>(200, response);
 
 			}
-			catch(Exception ex) {
+			catch (Exception ex)
+			{
 				return new ApiResponse<CustomerResponseDTO>(500, $"An unexpected error occurred while processing your request, Error: {ex.Message}");
 			}
 		}
@@ -241,7 +252,8 @@ namespace Bussines_Logic.Services.Services
 			if (customer is null)
 				return new ApiResponse<CustomerResponseDTO>(404, "Customer not found.");
 
-			try {
+			try
+			{
 				await unitOfWork.CreateTarsaction();
 				await unitOfWork.CustomerRepository.Delete(customer);
 				await unitOfWork.Save();
@@ -252,10 +264,84 @@ namespace Bussines_Logic.Services.Services
 				};
 				return new ApiResponse<CustomerResponseDTO>(200, updateResponse);
 			}
-			catch(Exception ex) {
+			catch (Exception ex)
+			{
 				await unitOfWork.RollBack();
 				return new ApiResponse<CustomerResponseDTO>(500, $"An unexpected error occurred while processing your request, Error: {ex.Message}");
 			}
+		}
+		public async Task<ApiResponse<ConfirmationResponseDTO>> ForgotPasswordAsync(ForgotPasswordDto forgotPassword)
+		{
+			try
+			{
+				var customer = await userManager.FindByEmailAsync(forgotPassword.Email);
+				if (customer is null)
+					return new ApiResponse<ConfirmationResponseDTO>(404, "Invalid Request");
+
+
+				var code=emailVerification.GenerateCode(customer.Email);
+				var emailBody = $@"
+						Hi {customer.FirstName},
+                          this Code Used It When You Reset Password   {code}
+						";
+
+				await emailSender.SendEmailAsync(customer.Email, "Password Reset Request", emailBody);
+			    return new ApiResponse<ConfirmationResponseDTO>(200, $"Check you email");
+			}
+			catch (Exception ex) {
+				return new ApiResponse<ConfirmationResponseDTO>(500, $"An unexpected error occurred while processing your request, Error: {ex.Message}");
+			}
+		}
+		public async Task<ApiResponse<ConfirmationResponseDTO>> ResetPasswordAsync(ResetPasswordDTO resetPassword)
+		{
+			try
+			{
+				var user=await userManager.FindByEmailAsync(resetPassword.Email);	
+				if(user is null)
+					return new ApiResponse<ConfirmationResponseDTO>(404, "Invalid Request");
+
+				var checkcode = emailVerification.CheckCode(user.Email, resetPassword.code);
+				if(!checkcode)
+					return new ApiResponse<ConfirmationResponseDTO>(400, "Invalid Code");
+
+				var oldpassword = user.PasswordHash;
+				await userManager.RemovePasswordAsync(user);
+				var result=await userManager.AddPasswordAsync(user,resetPassword.Password);
+				if(result.Succeeded) {
+					await userManager.UpdateAsync(user);
+					var confirmationMessage = new ConfirmationResponseDTO
+					{
+						Message = "Password Reset successfully."
+					};
+					return new ApiResponse<ConfirmationResponseDTO>(200, confirmationMessage);
+				}
+				user.PasswordHash= oldpassword;
+				await userManager.UpdateAsync(user);
+				return new ApiResponse<ConfirmationResponseDTO>(400, $"Please Try On Another Time");
+			}
+			catch (Exception ex) { 
+				return new ApiResponse<ConfirmationResponseDTO>(500, $"An unexpected error occurred while processing your request, Error: {ex.Message}");
+			}
+		}
+		//public async Task<string> GetRecommendedProduct(int UserId)
+		//{
+			
+		//}
+
+		private CustomerResponseDTO MapCustomerToDTO(Customer customer)
+		{
+			var response = new CustomerResponseDTO()
+			{
+				DateOfBirth = customer.DateOfBirth,
+				CustomerId = customer.Id,
+				PhoneNumber = customer.applicationUser.PhoneNumber,
+				Email = customer.applicationUser.Email,
+				FirstName = customer.applicationUser.FirstName,
+				UserName = customer.applicationUser.UserName,
+				lastName = customer.applicationUser.LastName,
+			};
+
+			return response;
 		}
 	}
 }

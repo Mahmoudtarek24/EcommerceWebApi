@@ -23,7 +23,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Images\Product\RelatedImages\" />
+    <Folder Include="wwwroot\Customer\" />
+    <Folder Include="wwwroot\Images\" />
+    <Folder Include="wwwroot\RelatedImagesProduct\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Product\23ee552e-525c-4bb4-a5d3-876834d4f102.jpg" />
+    <None Include="wwwroot\Product\402c3e98-ed7b-4acf-bce1-b80dc8b93faa.jpg" />
+    <None Include="wwwroot\Product\50e1ca8e-bc9b-43c7-83f4-53f3f28755e9.jpg" />
+    <None Include="wwwroot\Product\6d355a30-2afc-4ea2-a5f7-60bb148b6eb2.jpg" />
+    <None Include="wwwroot\Product\9a40d21a-07c5-40e3-b103-d5d14a914960.jpg" />
+    <None Include="wwwroot\Product\cf8e98f9-817b-4ad0-b17d-bf7b7f2efd08.png" />
+    <None Include="wwwroot\Product\e79362e0-9304-435f-858f-0089881104d9.jpg" />
   </ItemGroup>
 
   <ItemGroup>

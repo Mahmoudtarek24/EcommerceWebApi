@@ -30,6 +30,7 @@ namespace Bussines_Logic.DTO
 
 
 		[Required(ErrorMessage = Error.RequiredFiled)]
+		[Compare("Password",ErrorMessage =Error.ConfirmPasswordNotMatch)]
 		public string ConfirmPassword { get; set; }
 
 
@@ -37,8 +38,10 @@ namespace Bussines_Logic.DTO
 		[Phone(ErrorMessage =Error.PhoneNumber)]
 		public string PhoneNumber { get; set; }
 
+		public IFormFile? ImageData { get; set; }
 
-		//[Required(ErrorMessage = Error.RequiredFiled)]
-		//public DateTime DateOfBirth { get; set; }
+		[Required(ErrorMessage = Error.RequiredFiled)]
+		[AgeRange(100)]
+		public DateTime DateOfBirth { get; set; }
 	}
 }

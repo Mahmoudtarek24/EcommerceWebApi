@@ -53,7 +53,22 @@ namespace Data_Access_Layer.Repository.Repository
 			return await query.SingleOrDefaultAsync(filter);	
 
 		}
-		
+		public async Task<bool> GetAnyEntityAsync(Expression<Func<T, bool>> filter, string[] Includes = null, bool tracked = false)
+		{
+			IQueryable<T> query = Table.AsQueryable();
+			if (tracked)
+				query = query.AsNoTracking();
+
+			if (Includes != null)
+			{
+				foreach (var Include in Includes)
+					query = query.Include(Include);
+			}
+
+			return await query.AnyAsync(filter);
+
+		}
+
 		public async Task<T> GetByIdAsync(int id)
 		{
 			return await Table.FindAsync(id);

@@ -14,5 +14,6 @@ namespace Data_Access_Layer.Models
 		public ICollection<Cart> carts { get; set; }	
 
 		public ICollection<Order> orders { get; set; }	
+		public ICollection<Feedback>? feedbacks { get; set; }	
 	}
 }

@@ -4,6 +4,7 @@ using Data_Access_Layer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250325000726_addFeedBacks")]
+    partial class addFeedBacks
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,7 +69,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Addresss", (string)null);
+                    b.ToTable("Addresss");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.ApplicationUser", b =>
@@ -120,9 +123,6 @@ namespace DataAccessLayer.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("ProfileImage")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -198,7 +198,7 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("cancellations", (string)null);
+                    b.ToTable("cancellations");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.Cart", b =>
@@ -225,7 +225,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("customerId");
 
-                    b.ToTable("carts", (string)null);
+                    b.ToTable("carts");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.CartItem", b =>
@@ -270,7 +270,7 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("cartItems", null, t =>
+                    b.ToTable("cartItems", t =>
                         {
                             t.HasCheckConstraint("CartItemQuentity", "[Quantity] between 0 and 100");
                         });
@@ -307,7 +307,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.Customer", b =>
@@ -331,7 +331,7 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Customers", (string)null);
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.Feedback", b =>
@@ -343,8 +343,8 @@ namespace DataAccessLayer.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeedbackId"));
 
                     b.Property<string>("Comment")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -356,7 +356,7 @@ namespace DataAccessLayer.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Rating")
-                        .HasColumnType("decimal(3,1)");
+                        .HasColumnType("decimal(2,1)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -367,10 +367,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("feedbacks", null, t =>
-                        {
-                            t.HasCheckConstraint("RatingValue", "[Rating] between 0.01 and 10.00 ");
-                        });
+                    b.ToTable("feedbacks");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.Order", b =>
@@ -436,7 +433,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("ShippingAddressId");
 
-                    b.ToTable("Orders", (string)null);
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.OrderItem", b =>
@@ -474,7 +471,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems", (string)null);
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.Payment", b =>
@@ -515,7 +512,7 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("payments", (string)null);
+                    b.ToTable("payments");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.Product", b =>
@@ -570,7 +567,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("product", null, t =>
+                    b.ToTable("product", t =>
                         {
                             t.HasCheckConstraint("DiscountPercentage", "[DiscountPercentage] between 0 and 100");
 
@@ -599,7 +596,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImage", (string)null);
+                    b.ToTable("ProductImage");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.Refund", b =>
@@ -655,7 +652,7 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("PaymentId")
                         .IsUnique();
 
-                    b.ToTable("refunds", null, t =>
+                    b.ToTable("refunds", t =>
                         {
                             t.HasCheckConstraint("AmountValue", "[Amount]>= 0.00 ");
                         });
@@ -676,7 +673,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("statuses", (string)null);
+                    b.ToTable("statuses");
 
                     b.HasData(
                         new

@@ -19,5 +19,6 @@ namespace Data_Access_Layer.Models
 		public ICollection<ProductImage>? productImages { get; set;}	
 
 		public ICollection<OrderItem> orderItems { get; set; }		
+		public ICollection<Feedback>? feedbacks { get; set; }		
 	}
 }

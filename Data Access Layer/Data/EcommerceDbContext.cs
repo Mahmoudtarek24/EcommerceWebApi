@@ -50,6 +50,8 @@ namespace Data_Access_Layer.Data
 			modelBuilder.Entity<Refund>().Property(e => e.Status).HasConversion<string>().IsRequired().HasMaxLength(30);
 			modelBuilder.Entity<Refund>().HasCheckConstraint("AmountValue", "[Amount]>= 0.00 ");
 
+			modelBuilder.Entity<Feedback>().HasCheckConstraint("RatingValue", "[Rating] between 0.01 and 10.00 ");
+
 
 			foreach (var entitys in modelBuilder.Model.GetEntityTypes())
 			{
@@ -90,7 +92,7 @@ namespace Data_Access_Layer.Data
 			//one-to-one    ApplicationUser-Custome , CartItem-Product   , Payment-Order ,Cancellation-Order
 			// Refund-Payment
 
-			modelBuilder.Entity<Customer>().HasOne(e => e.applicationUser).WithOne().HasForeignKey<Customer>(e => e.UserId);
+			modelBuilder.Entity<Customer>().HasOne(e => e.applicationUser).WithOne(e=>e.Customer).HasForeignKey<Customer>(e => e.UserId);
 			modelBuilder.Entity<CartItem>().HasOne(e => e.Product).WithOne().HasForeignKey<CartItem>(e => e.ProductId);
 			modelBuilder.Entity<Payment>().HasOne(e=>e.Order).WithOne(e=>e.payment).HasForeignKey<Payment>(e=>e.OrderId);
 			modelBuilder.Entity<Cancellation>().HasOne(e => e.Order).WithOne(e => e.cancellation).HasForeignKey<Cancellation>(e => e.OrderId);
@@ -100,6 +102,7 @@ namespace Data_Access_Layer.Data
 
 			//one-to-many  custome-address ,category-product  , Product-ProductImages   , Customer-Order
 			//  Order-OrderItem  , Product-OrderItem   ,Order-BillingAddress      Order-ShippingAddress
+			// Customer-FeedBack  , Product-FeedBack
 			modelBuilder.Entity<Customer>().HasMany(e => e.Addresses).WithOne(e => e.Customer);
 			modelBuilder.Entity<Category>().HasMany(e => e.products).WithOne(e => e.Category);
 			modelBuilder.Entity<Product>().HasMany(e=>e.productImages).WithOne(e => e.Product);
@@ -110,6 +113,8 @@ namespace Data_Access_Layer.Data
 			modelBuilder.Entity<Product>().HasMany(e=>e.orderItems).WithOne(e => e.product);	
 			modelBuilder.Entity<Order>().HasOne(e=>e.BillingAddress).WithMany().HasForeignKey(e=>e.BillingAddressId);		
 			modelBuilder.Entity<Order>().HasOne(e=>e.ShippingAddress).WithMany().HasForeignKey(e=>e.ShippingAddressId);
+			modelBuilder.Entity<Product>().HasMany(e => e.feedbacks).WithOne(e => e.Product);
+			modelBuilder.Entity<Customer>().HasMany(e => e.feedbacks).WithOne(e => e.Customer);
 
 			modelBuilder.Entity<Status>().HasData(
 			   //Order Statuses
@@ -141,5 +146,7 @@ namespace Data_Access_Layer.Data
 		public DbSet<Payment> payments { get; set; }	
 		public DbSet<Cancellation> cancellations { get; set; }	
 		public DbSet<Refund> refunds { get; set; }	
+		public DbSet<Feedback> feedbacks { get; set; }	
+		public DbSet<ApplicationUser> Users { get; set; }	
 	}
 }

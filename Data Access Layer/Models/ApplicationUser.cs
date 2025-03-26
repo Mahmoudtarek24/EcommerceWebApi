@@ -6,7 +6,9 @@ namespace Data_Access_Layer.Models
 		[MaxLength(50)]
 		public string FirstName { get; set; } = null!;
 		[MaxLength(50)]
-		public string LastName { get; set; } = null!;	
-		
+		public string LastName { get; set; } = null!;
+	
+		public string? ProfileImage { get; set; }	
+	    public Customer Customer { get; set; }		
 	}
 }

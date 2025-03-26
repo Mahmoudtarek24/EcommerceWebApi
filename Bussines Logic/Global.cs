@@ -24,11 +24,14 @@ global using Microsoft.AspNetCore.Identity.UI.Services;
 global using Bussines_Logic.Settings;
 global using Microsoft.Extensions.Options;
 global using System.Net.Mail;
-global using Microsoft.Extensions.Hosting;
 global using System.Net;
 global using Bussines_Logic.DTO.DaymentDto;
 global using Bussines_Logic.ResponseDTO.PaymentRespondDto;
 global using Bussines_Logic.DTO.PaymentDto;
 global using Bussines_Logic.ResponseDTO.CancellationRespondDto;
 global using Bussines_Logic.DTO.CancellationDto;
-
+global using Bussines_Logic.DTO.FeedBackDto;
+global using Bussines_Logic.ResponseDTO.FeedBackRespondDto;
+global using Bussines_Logic.Validation;
+global using Bussines_Logic.ResponseDTO.AdminRespondDto;
+global using Bussines_Logic.DTO.CustomerDto;
