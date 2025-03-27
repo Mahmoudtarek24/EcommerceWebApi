@@ -7,6 +7,7 @@ namespace Ecommerce.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[AllowAnonymous]
 	public class CustomerController : ControllerBase
 	{
 		private readonly CustomerService<IDto> customerService;

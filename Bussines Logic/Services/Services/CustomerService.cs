@@ -1,6 +1,10 @@
 ﻿
 using Data_Access_Layer.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Bussines_Logic.Services.Services
 {
@@ -8,22 +12,25 @@ namespace Bussines_Logic.Services.Services
 	{
 		public IUnitOfWork unitOfWork { get; }
 		private readonly UserManager<ApplicationUser> userManager;
-		private readonly SignInManager<ApplicationUser> signInManager;	
+		private readonly SignInManager<ApplicationUser> signInManager;
 		private readonly IImageService imageService;
 		private readonly string CustomerImageFolderPath = @"\Customer";
 		private readonly IEmailSender emailSender;
 		private readonly EmailVerification emailVerification;
 		private readonly EcommerceDbContext context;
+		private readonly JWTSetting jWTSetting;
 		public CustomerService(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, IImageService imageService
-			, IEmailSender emailSender , EmailVerification emailVerification,SignInManager<ApplicationUser> signInManager ,EcommerceDbContext context) 
+			, IEmailSender emailSender, EmailVerification emailVerification
+			, SignInManager<ApplicationUser> signInManager, EcommerceDbContext context, IOptions<JWTSetting> options)
 		{
 			this.unitOfWork = unitOfWork;
 			this.userManager = userManager;
 			this.imageService = imageService;
 			this.emailSender = emailSender;
-			this.emailVerification = emailVerification;	
-			this.signInManager = signInManager;	
-			this.context = context;	
+			this.emailVerification = emailVerification;
+			this.signInManager = signInManager;
+			this.context = context;
+			this.jWTSetting = options.Value;
 		}
 		//Register	Customer
 		public async Task<ApiResponse<CustomerResponseDTO>> CreateAsync(D createDto)
@@ -81,7 +88,10 @@ namespace Bussines_Logic.Services.Services
 					await unitOfWork.Commit();
 
 					var response = MapCustomerToDTO(customer);
-					//TODO  Return Token
+					JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
+
+					response.Token=new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+					response.ExpiresOn = jwtSecurityToken.ValidTo;
 					return new ApiResponse<CustomerResponseDTO>(200, response);
 				}
 				catch (Exception ex)
@@ -279,16 +289,17 @@ namespace Bussines_Logic.Services.Services
 					return new ApiResponse<ConfirmationResponseDTO>(404, "Invalid Request");
 
 
-				var code=emailVerification.GenerateCode(customer.Email);
+				var code = emailVerification.GenerateCode(customer.Email);
 				var emailBody = $@"
 						Hi {customer.FirstName},
                           this Code Used It When You Reset Password   {code}
 						";
 
 				await emailSender.SendEmailAsync(customer.Email, "Password Reset Request", emailBody);
-			    return new ApiResponse<ConfirmationResponseDTO>(200, $"Check you email");
+				return new ApiResponse<ConfirmationResponseDTO>(200, $"Check you email");
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				return new ApiResponse<ConfirmationResponseDTO>(500, $"An unexpected error occurred while processing your request, Error: {ex.Message}");
 			}
 		}
@@ -296,18 +307,19 @@ namespace Bussines_Logic.Services.Services
 		{
 			try
 			{
-				var user=await userManager.FindByEmailAsync(resetPassword.Email);	
-				if(user is null)
+				var user = await userManager.FindByEmailAsync(resetPassword.Email);
+				if (user is null)
 					return new ApiResponse<ConfirmationResponseDTO>(404, "Invalid Request");
 
 				var checkcode = emailVerification.CheckCode(user.Email, resetPassword.code);
-				if(!checkcode)
+				if (!checkcode)
 					return new ApiResponse<ConfirmationResponseDTO>(400, "Invalid Code");
 
 				var oldpassword = user.PasswordHash;
 				await userManager.RemovePasswordAsync(user);
-				var result=await userManager.AddPasswordAsync(user,resetPassword.Password);
-				if(result.Succeeded) {
+				var result = await userManager.AddPasswordAsync(user, resetPassword.Password);
+				if (result.Succeeded)
+				{
 					await userManager.UpdateAsync(user);
 					var confirmationMessage = new ConfirmationResponseDTO
 					{
@@ -315,17 +327,18 @@ namespace Bussines_Logic.Services.Services
 					};
 					return new ApiResponse<ConfirmationResponseDTO>(200, confirmationMessage);
 				}
-				user.PasswordHash= oldpassword;
+				user.PasswordHash = oldpassword;
 				await userManager.UpdateAsync(user);
 				return new ApiResponse<ConfirmationResponseDTO>(400, $"Please Try On Another Time");
 			}
-			catch (Exception ex) { 
+			catch (Exception ex)
+			{
 				return new ApiResponse<ConfirmationResponseDTO>(500, $"An unexpected error occurred while processing your request, Error: {ex.Message}");
 			}
 		}
 		//public async Task<string> GetRecommendedProduct(int UserId)
 		//{
-			
+
 		//}
 
 		private CustomerResponseDTO MapCustomerToDTO(Customer customer)
@@ -343,6 +356,37 @@ namespace Bussines_Logic.Services.Services
 
 			return response;
 		}
+
+
+		public async Task<JwtSecurityToken> GenerateToken(ApplicationUser user)
+		{
+			var UserRoles = await userManager.GetRolesAsync(user);
+			List<Claim> claims = new List<Claim>();
+			if (UserRoles.Count > 0)
+			{
+				foreach (var role in UserRoles)
+				{
+					claims.Add(new Claim(ClaimTypes.Role, role));
+				}
+			}
+
+			claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+			claims.Add(new Claim(ClaimTypes.Name, user.UserName));
+			claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+
+			SymmetricSecurityKey symmetricSecurityKey =new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jWTSetting.Key));
+			SigningCredentials signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+
+			JwtSecurityToken token = new JwtSecurityToken(
+				issuer: jWTSetting.Issure,
+				audience: jWTSetting.Audience,
+				expires: DateTime.Now.AddDays(jWTSetting.DurationInDays),
+				claims:claims,
+                signingCredentials: signingCredentials
+				);
+			return token;
+		}
+
 	}
 }
 

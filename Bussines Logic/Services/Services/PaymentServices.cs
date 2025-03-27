@@ -1,4 +1,7 @@
 ﻿
+using Data_Access_Layer.Data;
+using Data_Access_Layer.Models;
+
 namespace Bussines_Logic.Services.Services
 {
 	public class PaymentServices
@@ -6,18 +9,22 @@ namespace Bussines_Logic.Services.Services
 		private readonly IUnitOfWork unitOfWork;
 		private readonly IEmailSender emailSender;
 		private readonly IWebHostEnvironment webHostEnvironment;
-		public PaymentServices(IUnitOfWork unitOfWork, IEmailSender emailSender, IWebHostEnvironment webHostEnvironment)
+		private readonly EcommerceDbContext context;
+		public PaymentServices(IUnitOfWork unitOfWork, IEmailSender emailSender, IWebHostEnvironment webHostEnvironment, EcommerceDbContext context)
 		{
 			this.unitOfWork = unitOfWork;
 			this.emailSender = emailSender;
 			this.webHostEnvironment = webHostEnvironment;
+			this.context = context;	
 		}
 		public async Task<ApiResponse<PaymentResponseDTO>> ProcessPaymentAsync(PaymentRequestDTO paymentRequest)
 		{
 			try
 			{
-				await unitOfWork.CreateTarsaction();
-
+				if (paymentRequest.FromCart)
+				{
+					await unitOfWork.CreateTarsaction();
+				}
 				string[] Includes = { "payment" };
 				var order = await unitOfWork.OrderRepository
 						  .GetEntityAsync(e => e.OrderId == paymentRequest.OrderId && e.CustomerId == paymentRequest.CustomerId, Includes);
@@ -252,6 +259,87 @@ namespace Bussines_Logic.Services.Services
 				.Replace("{PaymentStatus}", payment?.PaymentStatus.ToString() ?? "N/A"); ;
 			    string subject = $"Order Confirmation - {order.OrderNumber}";
 			    await emailSender.SendEmailAsync("", subject, emailBody);
+		}
+
+		public async Task<ApiResponse<PaymentResponseDTO>> ProcessCartAsync(buyingCartItemsDTO cartDTO )
+		{
+			try {
+				await unitOfWork.CreateTarsaction();
+
+				string[] Includs = { "CartItems.Product" };
+				var ValidCart = await unitOfWork.CartRepository.GetEntityAsync(e => e.cartId == cartDTO.CartId && e.customerId == cartDTO.CustomerId && !e.IsCheckedOut, Includs);
+				if (ValidCart is null)
+					return new ApiResponse<PaymentResponseDTO>(404, "Cart Not Found");
+
+			   var cartItems = ValidCart.CartItems.ToList();
+    		   var listOrderItem= new List<OrderItem>();
+
+				decimal totalBaseAmount = 0;
+				decimal totalDiscountAmount = 0;
+				decimal totalAmount = 0;
+
+				foreach (var cartItem in cartItems)
+				{
+					var discountPerUnit = cartItem.Product.DiscountPercentage > 0 ? (cartItem.Product.Price * cartItem.Product.DiscountPercentage / 100) : 0;
+					var totalDiscount = discountPerUnit * cartItem.Quantity;
+
+					decimal basePrice = cartItem.Quantity * cartItem.Product.Price;
+					var orderItem = new OrderItem()
+					{
+						Discount = cartItem.Discount,
+						ProductId = cartItem.ProductId,
+						Quantity = cartItem.Quantity,
+						UnitPrice = cartItem.UnitPrice,
+						TotalPrice = cartItem.TotalPrice,
+					};
+
+					listOrderItem.Add(orderItem);
+
+					totalDiscountAmount += totalDiscount;
+					totalBaseAmount += basePrice;
+				}
+				Order order = new Order()
+				{
+					orderItems = listOrderItem,
+					ShippingAddressId = cartDTO.ShippingAddressId,
+					BillingAddressId = cartDTO.BillingAddressId,
+					CreateOn = ValidCart.CreatedAt,
+					IsDeleted = false,
+					CustomerId = cartDTO.CustomerId,
+					OrderDate = DateTime.Now,
+					OrderNumber = GenerateOrderNumber(),
+					OrderStatus = OrderStatus.Pending,
+					TotalAmount = totalAmount,
+					ShippingCost = 10,
+					TotalBaseAmount = totalBaseAmount,
+					TotalDiscountAmount = totalDiscountAmount,
+				};
+				await unitOfWork.OrderRepository.Insert(order);
+				await unitOfWork.Save();
+
+				ValidCart.IsCheckedOut = true;
+				ValidCart.UpdatedAt = DateTime.Now;
+				await unitOfWork.Save();
+
+				PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO()
+				{
+					CustomerId = cartDTO.CustomerId,
+					OrderId = order.OrderId,
+					PaymentMethod = cartDTO.PaymentMethod,
+					FromCart = false
+				};
+			    var paymentProcess=await ProcessPaymentAsync(paymentRequestDTO);
+				return paymentProcess;	
+			}
+			catch (Exception ex) {
+				await unitOfWork.RollBack();
+				return new ApiResponse<PaymentResponseDTO>(500, "An unexpected error occurred while processing the payment.");
+			}
+		}
+		private string GenerateOrderNumber()
+		{
+			var random = new Random();
+			return $"ORD-{DateTime.UtcNow.ToString("yyyyMMdd-HHmmss")}-{random.Next(1000, 9999)}";
 		}
 	}
 }

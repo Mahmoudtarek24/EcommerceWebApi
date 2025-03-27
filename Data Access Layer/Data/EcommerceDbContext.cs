@@ -36,6 +36,7 @@ namespace Data_Access_Layer.Data
 
 			//CartItem properity
 			modelBuilder.Entity<CartItem>().HasCheckConstraint("CartItemQuentity", "[Quantity] between 0 and 100");
+			modelBuilder.Entity<CartItem>().HasIndex(e => e.ProductId).IsUnique(false);
 
 			//Order Properity
 			modelBuilder.Entity<Order>().Property(e => e.OrderStatus).HasConversion<string>().IsRequired().HasMaxLength(30);

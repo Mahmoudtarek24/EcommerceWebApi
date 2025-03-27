@@ -58,5 +58,18 @@ namespace Ecommerce.Controllers
 			}
 			return Ok(response);
 		}
+
+		[HttpPost("BuyingCartItems")]
+		public async Task<ActionResult> ProcessCart([FromBody]buyingCartItemsDTO dTO)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
+
+			var respond=await paymentServices.ProcessCartAsync(dTO);	
+			if(respond.StatusCode!=200)
+				return StatusCode(respond.StatusCode, respond);	
+
+			return Ok(respond);
+		}
 	}
 }

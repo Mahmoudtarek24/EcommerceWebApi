@@ -93,7 +93,7 @@ namespace Bussines_Logic.Services.Services
 
 					decimal totalBaseAmount = 0;
 					decimal totalDiscountAmount = 0;
-					decimal shippingCost = 10.00m; // Example fixed shipping cost.
+					decimal shippingCost = 10.00m;
 					decimal totalAmount = 0;
 
 					//Step 4: Start Preparing the Order

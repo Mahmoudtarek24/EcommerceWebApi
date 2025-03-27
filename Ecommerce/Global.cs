@@ -16,3 +16,4 @@ global using Bussines_Logic.ResponseDTO.PaymentRespondDto;
 global using Bussines_Logic.DTO.CancellationDto;
 global using Bussines_Logic.DTO.FeedBackDto;
 global using Bussines_Logic.ResponseDTO.FeedBackRespondDto;
+global using Microsoft.AspNetCore.Authorization;

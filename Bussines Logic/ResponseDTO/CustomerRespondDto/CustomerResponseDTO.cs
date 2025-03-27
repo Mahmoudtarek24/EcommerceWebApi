@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bussines_Logic.ResponseDTO
 {
-	public class CustomerResponseDTO
+	public class CustomerResponseDTO : AuthDTO
 	{
 		public int CustomerId { get; set; }	
 		public string FirstName { get; set; }	
@@ -17,7 +17,5 @@ namespace Bussines_Logic.ResponseDTO
 		public DateTime DateOfBirth { get; set; }
 		public string PhoneNumber { get; set; }	
 		public string message { get; set; }	
-
-
 	}
 }
